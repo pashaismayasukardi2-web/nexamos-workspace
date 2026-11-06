@@ -21,3 +21,4 @@ npm install
 npm run dev
 ```
 Aplikasi akan berjalan di `http://localhost:3001`.
+
