@@ -21,19 +21,27 @@ jobs:
           script_stop: true
           script: |
             echo "🚀 [Deploy] Memulai auto-deploy nexamos-workspace..."
-            cd ~/nexamos-workspace || { echo "❌ Direktori ~/nexamos-workspace tidak ditemukan!"; exit 1; }
-            
-            echo "📥 [Git] Menarik pembaruan kode terbaru dari branch main..."
-            git pull origin main
-            
-            echo "📦 [Dependencies] Menginstal dependensi..."
-            npm install --prefer-offline --no-audit
-            
-            echo "⚙️ [Build] Membangun Next.js production build..."
-            npm run build
-            
-            echo "🔄 [PM2] Reloading service nexamos-workspace..."
-            pm2 reload nexamos-workspace || pm2 restart nexamos-workspace
-            pm2 save
-            
+            if [ ! -d ~/nexamos-workspace ]; then
+              echo "📥 [Clone] Direktori ~/nexamos-workspace belum ada, melakukan clone pertama kali..."
+              git clone https://github.com/pashaismayasukardi2-web/nexamos-workspace.git ~/nexamos-workspace
+              cd ~/nexamos-workspace
+              echo "📦 [Dependencies] Menginstal dependensi..."
+              npm install --prefer-offline --no-audit
+              echo "⚙️ [Build] Membangun Next.js production build..."
+              npm run build
+              echo "⚙️ [PM2] Mendaftarkan service nexamos-workspace..."
+              pm2 start npm --name nexamos-workspace -- run start
+              pm2 save
+            else
+              cd ~/nexamos-workspace
+              echo "📥 [Git] Menarik pembaruan kode terbaru dari branch main..."
+              git pull origin main
+              echo "📦 [Dependencies] Menginstal dependensi..."
+              npm install --prefer-offline --no-audit
+              echo "⚙️ [Build] Membangun Next.js production build..."
+              npm run build
+              echo "🔄 [PM2] Reloading service nexamos-workspace..."
+              pm2 reload nexamos-workspace || pm2 restart nexamos-workspace
+              pm2 save
+            fi
             echo "✅ [Sukses] Deployment nexamos-workspace berhasil dan aktif!"
