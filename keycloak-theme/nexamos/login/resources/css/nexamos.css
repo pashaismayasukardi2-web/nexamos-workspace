@@ -97,7 +97,7 @@ body.nexamos-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
+  gap: 36px;
   box-sizing: border-box;
 }
 
@@ -545,18 +545,21 @@ input[type="submit"].pf-c-button.pf-m-primary {
   margin-bottom: 12px !important;
   font-size: 12px !important;
 }
+
 .alert-error,
 .pf-c-alert.pf-m-danger {
   background: rgba(244, 63, 94, 0.12) !important;
   border: 1px solid rgba(244, 63, 94, 0.32) !important;
   color: #fda4af !important;
 }
+
 .alert-success,
 .pf-c-alert.pf-m-success {
   background: rgba(16, 185, 129, 0.12) !important;
   border: 1px solid rgba(16, 185, 129, 0.32) !important;
   color: #6ee7b7 !important;
 }
+
 .alert-info,
 .pf-c-alert.pf-m-info {
   background: rgba(99, 102, 241, 0.12) !important;
@@ -585,6 +588,7 @@ input[type="submit"].pf-c-button.pf-m-primary {
    Responsive Breakpoints (Mobile & Low Height)
    ========================================================================== */
 @media (max-width: 860px) {
+
   html,
   html.login-pf,
   .login-pf body,
@@ -619,7 +623,8 @@ input[type="submit"].pf-c-button.pf-m-primary {
   }
 
   .nexamos-feature-grid {
-    display: none; /* Sembunyikan feature cards di layar kecil agar form langsung terlihat */
+    display: none;
+    /* Sembunyikan feature cards di layar kecil agar form langsung terlihat */
   }
 
   .nexamos-card-title {
@@ -628,6 +633,7 @@ input[type="submit"].pf-c-button.pf-m-primary {
 }
 
 @media (max-height: 660px) {
+
   html,
   html.login-pf,
   .login-pf body,
