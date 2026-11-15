@@ -107,30 +107,38 @@ body.nexamos-body {
 .nexamos-row-main {
   display: grid;
   grid-template-columns: 1.05fr 1fr;
-  gap: 36px;
+  gap: 64px;
   align-items: center;
   width: 100%;
 }
 
 /* --- Kolom Kiri: Branding & Keterangan --- */
 .nexamos-col-brand {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  text-align: left !important;
   padding-right: 12px;
 }
 
 .nexamos-brand-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  gap: 12px !important;
+  width: 100% !important;
 }
 
 .nexamos-brand-logo-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  align-self: flex-start !important;
+  text-decoration: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
@@ -140,10 +148,15 @@ body.nexamos-body {
 }
 
 .nexamos-brand-logo-img {
-  height: 48px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.25));
+  height: 50px !important;
+  max-height: 50px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.25)) !important;
 }
 
 .nexamos-sso-badge {
@@ -568,20 +581,21 @@ input[type="submit"].pf-c-button.pf-m-primary {
 }
 
 /* ==========================================================================
-   ROW 2: 1 Kolom Center Page (Footer Copyright)
+   Footer Copyright di Kolom Kanan (Di Bawah Form & Navigasi)
    ========================================================================== */
-.nexamos-row-footer {
-  width: 100%;
-  text-align: center;
-  padding-top: 4px;
+.nexamos-col-footer {
+  width: 100% !important;
+  text-align: center !important;
+  margin-top: 24px !important;
+  padding-top: 4px !important;
 }
 
 .nexamos-footer-text {
-  margin: 0;
-  color: #64748b;
-  font-size: 11.5px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  margin: 0 !important;
+  color: #64748b !important;
+  font-size: 11.5px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
 }
 
 /* ==========================================================================

@@ -137,11 +137,11 @@
 
       .nexamos-layout-container {
         width: 100%;
-        max-width: 920px;
+        max-width: 960px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 12px;
+        gap: 14px;
         box-sizing: border-box;
       }
 
@@ -149,7 +149,7 @@
       .nexamos-row-main {
         display: grid !important;
         grid-template-columns: 1.05fr 1fr !important;
-        gap: 32px !important;
+        gap: 64px !important;
         align-items: center !important;
         width: 100% !important;
       }
@@ -159,19 +159,27 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
+        align-items: flex-start !important;
+        text-align: left !important;
       }
 
       .nexamos-brand-wrapper {
         display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
-        gap: 10px !important;
+        text-align: left !important;
+        gap: 12px !important;
+        width: 100% !important;
       }
 
       .nexamos-brand-logo-link {
         display: inline-flex !important;
         align-items: center !important;
+        justify-content: flex-start !important;
+        align-self: flex-start !important;
         text-decoration: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
         transition: opacity 0.15s ease, transform 0.15s ease !important;
       }
 
@@ -181,10 +189,14 @@
       }
 
       .nexamos-brand-logo-img {
-        height: 40px !important;
-        max-height: 40px !important;
+        height: 50px !important;
+        max-height: 50px !important;
         width: auto !important;
         object-fit: contain !important;
+        object-position: left center !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
         filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.25)) !important;
       }
 
@@ -568,11 +580,12 @@
         color: #6ee7b7 !important;
       }
 
-      /* ROW 2: 1 Kolom Center Page Footer */
-      .nexamos-row-footer {
+      /* Footer di Kolom Kanan di Bawah Navigasi */
+      .nexamos-col-footer {
         width: 100% !important;
         text-align: center !important;
-        padding-top: 2px !important;
+        margin-top: 24px !important;
+        padding-top: 4px !important;
       }
 
       .nexamos-footer-text {
@@ -643,7 +656,7 @@
         <div class="nexamos-col-brand">
           <div class="nexamos-brand-wrapper">
             <a href="https://nexamos.cloud/workspace" class="nexamos-brand-logo-link" title="NexaMOS Workspace">
-              <img src="${url.resourcesPath}/img/logo-nexa-01.png" alt="NexaMOS" class="nexamos-brand-logo-img" height="40" style="height:40px;width:auto;max-height:40px;object-fit:contain;" />
+              <img src="${url.resourcesPath}/img/logo-nexa-01.png" alt="NexaMOS" class="nexamos-brand-logo-img" height="50" style="height:50px;width:auto;max-height:50px;object-fit:contain;object-position:left center;display:block;margin:0;padding:0;" />
             </a>
 
             <div class="nexamos-sso-badge">
@@ -818,16 +831,16 @@
               <span>Beranda NexaMOS</span>
             </a>
           </div>
+
+          <!-- Footer Copyright di Kolom Kanan dengan Jarak Agak Tinggi -->
+          <footer class="nexamos-col-footer">
+            <p class="nexamos-footer-text">
+              &copy; 2026 NexaMOS &middot; Sistem Operasi Pemasaran Berbasis Bukti
+            </p>
+          </footer>
         </div>
 
       </div>
-
-      <!-- ROW 2: 1 Kolom Center Page (Footer Copyright) -->
-      <footer class="nexamos-row-footer">
-        <p class="nexamos-footer-text">
-          &copy; 2026 NexaMOS &middot; Sistem Operasi Pemasaran Berbasis Bukti
-        </p>
-      </footer>
 
     </div>
   </div>
