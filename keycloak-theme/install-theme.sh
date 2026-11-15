@@ -7,8 +7,8 @@ THEME_DEST="/opt/keycloak/themes/nexamos"
 echo "[1/4] Menyalin tema kustom 'nexamos' ke ${THEME_DEST}..."
 rm -rf "${THEME_DEST}"
 cp -r "${THEME_SRC}" "${THEME_DEST}"
-chown -R root:root "${THEME_DEST}"
-chmod -R 755 "${THEME_DEST}"
+chown -R dsmdsm:dsmdsm "${THEME_DEST}"
+chmod -R 775 "${THEME_DEST}"
 
 echo "[2/4] Membangun ulang cache tema Keycloak (kc.sh build)..."
 /opt/keycloak/bin/kc.sh build
