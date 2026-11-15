@@ -105,17 +105,14 @@ export default function WorkspacePage() {
         {/* Brand & Workspace Label */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-linear-to-tr from-indigo-600 via-violet-600 to-fuchsia-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">
-              N
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-white tracking-tight text-base">NexaMOS</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-semibold border border-indigo-500/20">
-                  Workspace
-                </span>
-              </div>
-            </div>
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || '/workspace'}/logo-nexa-01.png`}
+              alt="NexaMOS"
+              className="h-10 w-auto object-contain shrink-0"
+            />
+            <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-semibold border border-indigo-500/20">
+              Workspace
+            </span>
           </div>
 
           <div className="hidden sm:block h-5 w-px bg-slate-800 mx-2" />

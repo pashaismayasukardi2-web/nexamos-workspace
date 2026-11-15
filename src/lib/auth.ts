@@ -9,7 +9,7 @@ const STORAGE_SESSION_KEY = 'nexamos_workspace_session';
 const STORAGE_VERIFIER_KEY = 'nexamos_workspace_verifier';
 const STORAGE_STATE_KEY = 'nexamos_workspace_state';
 
-function getBasePath(): string {
+export function getBasePath(): string {
   if (typeof window === 'undefined') return '';
   return window.location.pathname.startsWith('/workspace') ? '/workspace' : '';
 }
@@ -53,6 +53,8 @@ export async function login(): Promise<void> {
 
   sessionStorage.setItem(STORAGE_VERIFIER_KEY, verifier);
   sessionStorage.setItem(STORAGE_STATE_KEY, state);
+  localStorage.setItem(STORAGE_VERIFIER_KEY, verifier);
+  localStorage.setItem(STORAGE_STATE_KEY, state);
 
   const redirectUri = `${window.location.origin}${getBasePath()}/auth/callback`;
 
@@ -71,15 +73,23 @@ export async function login(): Promise<void> {
 export async function handleCallback(code: string, state: string): Promise<AuthSession> {
   if (typeof window === 'undefined') throw new Error('Browser environment required');
 
-  const savedState = sessionStorage.getItem(STORAGE_STATE_KEY);
-  const verifier = sessionStorage.getItem(STORAGE_VERIFIER_KEY);
+  const savedState =
+    sessionStorage.getItem(STORAGE_STATE_KEY) ||
+    localStorage.getItem(STORAGE_STATE_KEY);
+  const verifier =
+    sessionStorage.getItem(STORAGE_VERIFIER_KEY) ||
+    localStorage.getItem(STORAGE_VERIFIER_KEY);
 
   if (!savedState || savedState !== state) {
-    throw new Error('State validation failed. Sesi autentikasi tidak valid.');
+    const err = new Error('State validation failed. Sesi autentikasi tidak valid.') as Error & { code?: string };
+    err.code = 'STATE_MISMATCH';
+    throw err;
   }
 
   if (!verifier) {
-    throw new Error('Code verifier tidak ditemukan. Silakan login kembali.');
+    const err = new Error('Code verifier tidak ditemukan. Silakan login kembali.') as Error & { code?: string };
+    err.code = 'VERIFIER_MISSING';
+    throw err;
   }
 
   const redirectUri = `${window.location.origin}${getBasePath()}/auth/callback`;
@@ -105,6 +115,8 @@ export async function handleCallback(code: string, state: string): Promise<AuthS
   localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(session));
   sessionStorage.removeItem(STORAGE_STATE_KEY);
   sessionStorage.removeItem(STORAGE_VERIFIER_KEY);
+  localStorage.removeItem(STORAGE_STATE_KEY);
+  localStorage.removeItem(STORAGE_VERIFIER_KEY);
 
   return session;
 }

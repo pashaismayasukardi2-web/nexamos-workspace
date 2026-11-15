@@ -2,8 +2,10 @@
 
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { handleCallback } from '../../../lib/auth';
+import { getBasePath, handleCallback, login } from '../../../lib/auth';
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+
+const RETRY_FLAG_KEY = 'nexamos_workspace_sso_retry';
 
 function CallbackContent() {
   const router = useRouter();
@@ -22,12 +24,19 @@ function CallbackContent() {
     const errorDescription = searchParams.get('error_description');
 
     if (error) {
+      sessionStorage.removeItem(RETRY_FLAG_KEY);
       setStatus('error');
       setErrorMessage(errorDescription || error || 'Autentikasi dibatalkan.');
       return;
     }
 
     if (!code || !state) {
+      if (sessionStorage.getItem(RETRY_FLAG_KEY) !== '1') {
+        sessionStorage.setItem(RETRY_FLAG_KEY, '1');
+        login();
+        return;
+      }
+      sessionStorage.removeItem(RETRY_FLAG_KEY);
       setStatus('error');
       setErrorMessage('Parameter autentikasi tidak lengkap (missing code or state).');
       return;
@@ -36,12 +45,29 @@ function CallbackContent() {
     async function processAuth() {
       try {
         await handleCallback(code!, state!);
+        sessionStorage.removeItem(RETRY_FLAG_KEY);
         setStatus('success');
         setTimeout(() => {
-          window.location.href = '/';
-        }, 800);
+          window.location.href = getBasePath() || '/';
+        }, 600);
       } catch (err: any) {
-        console.error('[Auth Callback Error]', err);
+        console.warn('[Auth Callback] Retrying or handling error:', err);
+        const msg = String(err?.message || '');
+        const isRecoverablePkceState =
+          err?.code === 'STATE_MISMATCH' ||
+          err?.code === 'VERIFIER_MISSING' ||
+          msg.includes('State validation failed') ||
+          msg.includes('Code verifier') ||
+          msg.includes('invalid_grant') ||
+          msg.includes('Code not valid');
+
+        if (isRecoverablePkceState && sessionStorage.getItem(RETRY_FLAG_KEY) !== '1') {
+          sessionStorage.setItem(RETRY_FLAG_KEY, '1');
+          await login();
+          return;
+        }
+
+        sessionStorage.removeItem(RETRY_FLAG_KEY);
         setStatus('error');
         setErrorMessage(err.message || 'Gagal memproses sesi login.');
       }
@@ -108,12 +134,22 @@ function CallbackContent() {
                 {errorMessage}
               </p>
             </div>
-            <button
-              onClick={() => router.push('/')}
-              className="mt-4 px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/20"
-            >
-              Kembali ke Beranda
-            </button>
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <button
+                onClick={() => login()}
+                className="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/20"
+              >
+                Coba Masuk Lagi
+              </button>
+              <button
+                onClick={() => {
+                  window.location.href = getBasePath() || '/';
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
+              >
+                Kembali ke Workspace
+              </button>
+            </div>
           </div>
         )}
       </div>
