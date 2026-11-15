@@ -45,7 +45,8 @@ req_update = urllib.request.Request(
     REALM_URL,
     data=json.dumps({
         "loginTheme": "nexamos",
-        "displayName": "NexaMOS Identity Platform"
+        "displayName": "NexaMOS Identity Platform",
+        "displayNameHtml": ""
     }).encode(),
     headers=headers,
     method="PUT"
@@ -54,4 +55,4 @@ urllib.request.urlopen(req_update)
 print("loginTheme='nexamos' berhasil diaktifkan pada realm 'nexamos'!")
 PYEOF
 
-echo "✅ Selesai! Tema login NexaMOS SSO kini aktif."
+echo "✅ Selesai! Tema login 2-kolom & 2-row NexaMOS SSO kini aktif."

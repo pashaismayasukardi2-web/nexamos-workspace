@@ -1,12 +1,12 @@
 /* ==========================================================================
-   NexaMOS Custom Keycloak Login Theme (v1.0)
-   Unified Dark Slate + Indigo/Violet Glassmorphism Design System
+   NexaMOS Custom Keycloak Login Theme (v2.0)
+   2-Row, 2-Column Clean Non-Scrolling Layout
    ========================================================================== */
 
 :root {
   --nexa-bg: #020617;
   --nexa-card-bg: rgba(15, 23, 42, 0.88);
-  --nexa-card-border: rgba(51, 65, 85, 0.8);
+  --nexa-card-border: rgba(51, 65, 85, 0.75);
   --nexa-input-bg: rgba(2, 6, 23, 0.85);
   --nexa-input-border: #1e293b;
   --nexa-input-focus: #6366f1;
@@ -17,7 +17,8 @@
   --nexa-accent-hover: #a5b4fc;
 }
 
-/* 1. Page Reset & Background */
+/* 1. Global Reset & Body */
+html,
 html.login-pf,
 .login-pf body,
 body.nexamos-body {
@@ -25,13 +26,14 @@ body.nexamos-body {
   background-image: none !important;
   color: var(--nexa-text-main) !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  min-height: 100vh !important;
-  height: auto !important;
   margin: 0 !important;
   padding: 0 !important;
-  overflow-x: hidden !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
 /* Ambient Decorative Glow Orbs */
@@ -46,139 +48,220 @@ body.nexamos-body {
 .nexamos-orb {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(80px);
-  opacity: 0.55;
+  filter: blur(90px);
+  opacity: 0.5;
 }
 
 .nexamos-orb-1 {
-  top: -120px;
-  left: -120px;
-  width: 380px;
-  height: 380px;
+  top: -100px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
   background: radial-gradient(circle, rgba(79, 70, 229, 0.28) 0%, rgba(79, 70, 229, 0) 70%);
 }
 
 .nexamos-orb-2 {
-  bottom: -140px;
-  right: -120px;
+  bottom: -120px;
+  right: -100px;
   width: 420px;
   height: 420px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.24) 0%, rgba(168, 85, 247, 0) 70%);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0) 70%);
 }
 
 .nexamos-orb-3 {
-  top: 42%;
-  left: 50%;
+  top: 50%;
+  left: 45%;
   transform: translate(-50%, -50%);
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0) 70%);
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0) 70%);
 }
 
-/* 2. Main Flex Shell */
-.login-pf-page.nexamos-login-shell {
+/* 2. Page Viewport (No vertical scroll on desktop) */
+.nexamos-page-viewport {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 28px 16px 32px !important;
+  padding: 20px 24px;
   box-sizing: border-box;
 }
 
-/* 3. Brand Header */
-#kc-header.nexamos-header {
+/* 3. Layout Container */
+.nexamos-layout-container {
   width: 100%;
-  max-width: 440px;
-  margin: 0 auto 20px !important;
-  padding: 0 !important;
-  text-align: center !important;
-  float: none !important;
-}
-
-#kc-header-wrapper.nexamos-header-inner {
-  padding: 0 !important;
-  margin: 0 !important;
+  max-width: 980px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  gap: 8px;
-  text-transform: none !important;
-  letter-spacing: normal !important;
-  font-size: 14px !important;
+  gap: 16px;
+  box-sizing: border-box;
 }
 
-.nexamos-brand-link {
+/* ==========================================================================
+   ROW 1: 2 Kolom Grid (Kiri: Branding, Kanan: Card Form & Quick Nav)
+   ========================================================================== */
+.nexamos-row-main {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 36px;
+  align-items: center;
+  width: 100%;
+}
+
+/* --- Kolom Kiri: Branding & Keterangan --- */
+.nexamos-col-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 12px;
+}
+
+.nexamos-brand-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.nexamos-brand-logo-link {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   text-decoration: none;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.nexamos-brand-link:hover {
-  transform: scale(1.02);
-  opacity: 0.95;
+.nexamos-brand-logo-link:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
-.nexamos-brand-logo {
-  height: 56px;
+.nexamos-brand-logo-img {
+  height: 48px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 6px 18px rgba(99, 102, 241, 0.25));
+  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.25));
 }
 
-.nexamos-sso-pill {
+.nexamos-sso-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
   border-radius: 9999px;
-  background: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.28);
+  background: rgba(99, 102, 241, 0.14);
+  border: 1px solid rgba(99, 102, 241, 0.3);
   color: #818cf8;
   font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  margin-top: 2px;
+  letter-spacing: 0.02em;
 }
 
-.nexamos-sso-pill-icon {
+.nexamos-sso-badge-icon {
   width: 13px;
   height: 13px;
   flex-shrink: 0;
   color: #818cf8;
 }
 
-.nexamos-brand-subtitle {
+.nexamos-hero-title {
   margin: 0;
-  color: var(--nexa-text-muted);
-  font-size: 12.5px;
-  font-weight: 400;
-  line-height: 1.4;
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
-/* 4. Glassmorphic Auth Card */
-.card-pf.nexamos-card {
+.nexamos-hero-desc {
+  margin: 0;
+  color: var(--nexa-text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 440px;
+}
+
+.nexamos-feature-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 4px;
+}
+
+.nexamos-feature-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.55);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.nexamos-feature-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nexamos-feature-icon {
+  width: 16px;
+  height: 16px;
+  color: #818cf8;
+}
+
+.nexamos-feature-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--nexa-text-main);
+}
+
+.nexamos-feature-sub {
+  font-size: 11.5px;
+  color: var(--nexa-text-muted);
+  margin-top: 1px;
+}
+
+/* --- Kolom Kanan: Card Form & Tombol Navigasi --- */
+.nexamos-col-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 410px;
+  margin: 0 auto;
+}
+
+/* Auth Card */
+.card-pf.nexamos-auth-card {
   position: relative;
   width: 100% !important;
-  max-width: 430px !important;
-  margin: 0 auto !important;
-  padding: 30px 32px 32px !important;
+  max-width: 410px !important;
+  margin: 0 !important;
+  padding: 22px 24px 22px !important;
   background: var(--nexa-card-bg) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--nexa-card-border) !important;
-  border-radius: 20px !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.03) inset !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04) inset !important;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-.card-pf.nexamos-card::before {
+.card-pf.nexamos-auth-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -188,22 +271,19 @@ body.nexamos-body {
   background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #d946ef 100%);
 }
 
-/* 5. Card Header & Title */
 .login-pf-header.nexamos-card-header {
-  margin-bottom: 20px !important;
+  margin-bottom: 14px !important;
   padding: 0 !important;
-  text-align: center;
 }
 
-h1#kc-page-title {
+.nexamos-card-title {
   margin: 0 !important;
   padding: 0 !important;
-  font-size: 19px !important;
+  font-size: 17px !important;
   font-weight: 700 !important;
   color: var(--nexa-text-main) !important;
   letter-spacing: -0.015em;
-  line-height: 1.35;
-  text-align: center;
+  text-align: left;
 }
 
 #kc-content,
@@ -214,12 +294,11 @@ h1#kc-page-title {
   width: 100% !important;
 }
 
-/* Normalize Bootstrap grid classes inside card */
 .card-pf .form-horizontal .form-group,
 .card-pf .form-group {
   margin-left: 0 !important;
   margin-right: 0 !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 12px !important;
 }
 
 .card-pf .col-xs-12,
@@ -233,16 +312,15 @@ h1#kc-page-title {
   width: 100% !important;
 }
 
-/* 6. Form Labels & Inputs */
+/* Labels & Inputs */
 .pf-c-form__label,
 .pf-c-form__label-text,
 .card-pf label {
   display: block;
   color: var(--nexa-text-secondary) !important;
-  font-size: 13px !important;
+  font-size: 12.5px !important;
   font-weight: 600 !important;
-  margin-bottom: 6px !important;
-  letter-spacing: 0.005em;
+  margin-bottom: 5px !important;
 }
 
 .pf-c-form-control,
@@ -251,31 +329,23 @@ input.pf-c-form-control,
 .card-pf input[type="password"],
 .card-pf input[type="email"] {
   width: 100% !important;
-  height: 44px !important;
-  padding: 10px 14px !important;
+  height: 38px !important;
+  padding: 8px 12px !important;
   background-color: var(--nexa-input-bg) !important;
   border: 1px solid var(--nexa-input-border) !important;
-  border-bottom-color: var(--nexa-input-border) !important;
-  border-radius: 12px !important;
+  border-radius: 10px !important;
   color: var(--nexa-text-main) !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   font-family: inherit !important;
   line-height: 1.4 !important;
   box-shadow: none !important;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
   box-sizing: border-box !important;
 }
 
 .pf-c-form-control::placeholder,
 .card-pf input::placeholder {
   color: #64748b !important;
-}
-
-.pf-c-form-control:hover,
-.card-pf input[type="text"]:hover,
-.card-pf input[type="password"]:hover,
-.card-pf input[type="email"]:hover {
-  border-color: #334155 !important;
 }
 
 .pf-c-form-control:focus,
@@ -285,15 +355,9 @@ input.pf-c-form-control,
   outline: none !important;
   border-color: var(--nexa-input-focus) !important;
   background-color: #020617 !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.22) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
 }
 
-.pf-c-form-control[aria-invalid="true"] {
-  border-color: rgba(244, 63, 94, 0.75) !important;
-  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15) !important;
-}
-
-/* Prevent Chrome white/yellow autofill background */
 .card-pf input:-webkit-autofill,
 .card-pf input:-webkit-autofill:hover,
 .card-pf input:-webkit-autofill:focus {
@@ -303,7 +367,7 @@ input.pf-c-form-control,
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* 7. Password Input Group & Visibility Eye Toggle */
+/* Password Toggle */
 .pf-c-input-group {
   position: relative !important;
   display: flex !important;
@@ -315,82 +379,57 @@ input.pf-c-form-control,
 .pf-c-input-group .pf-c-form-control,
 .pf-c-input-group input[type="password"],
 .pf-c-input-group input[type="text"] {
-  padding-right: 44px !important;
-  border-radius: 12px !important;
+  padding-right: 40px !important;
 }
 
 .pf-c-input-group .pf-c-button.pf-m-control {
   position: absolute !important;
-  right: 5px !important;
+  right: 4px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  width: 34px !important;
-  height: 34px !important;
+  width: 30px !important;
+  height: 30px !important;
   padding: 0 !important;
   background: transparent !important;
   border: none !important;
-  border-radius: 8px !important;
   color: var(--nexa-text-muted) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
   z-index: 4 !important;
-  box-shadow: none !important;
-  transition: color 0.15s ease, background-color 0.15s ease !important;
 }
 
-.pf-c-input-group .pf-c-button.pf-m-control::after,
-.pf-c-input-group .pf-c-button.pf-m-control::before {
-  display: none !important;
-  border: none !important;
-}
-
-.pf-c-input-group .pf-c-button.pf-m-control:hover,
-.pf-c-input-group .pf-c-button.pf-m-control:focus {
+.pf-c-input-group .pf-c-button.pf-m-control:hover {
   color: var(--nexa-text-main) !important;
-  background: rgba(148, 163, 184, 0.12) !important;
-  outline: none !important;
 }
 
-/* 8. Settings Row: Remember Me & Forgot Password */
+/* Settings Row: Remember Me & Forgot Password */
 .login-pf-settings {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
-  margin-top: 4px !important;
-  margin-bottom: 20px !important;
-}
-
-#kc-form-options .checkbox {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin-top: 2px !important;
+  margin-bottom: 14px !important;
 }
 
 #kc-form-options .checkbox label,
 .pf-c-check__label {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  gap: 6px !important;
   color: var(--nexa-text-secondary) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+  font-size: 12px !important;
   cursor: pointer !important;
 }
 
 #kc-form-options input[type="checkbox"],
 .pf-c-check__input {
-  width: 16px !important;
-  height: 16px !important;
+  width: 15px !important;
+  height: 15px !important;
   margin: 0 !important;
   accent-color: #6366f1 !important;
-  border-radius: 4px !important;
   cursor: pointer !important;
-  position: static !important;
 }
 
 .login-pf-settings a,
@@ -398,10 +437,9 @@ input.pf-c-form-control,
 #kc-info-wrapper a,
 .card-pf a {
   color: var(--nexa-accent) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 600 !important;
   text-decoration: none !important;
-  transition: color 0.15s ease !important;
 }
 
 .login-pf-settings a:hover,
@@ -412,270 +450,194 @@ input.pf-c-form-control,
   text-decoration: underline !important;
 }
 
-/* 9. Submit & Action Buttons */
+/* Submit Button */
 #kc-form-buttons {
-  margin-top: 20px !important;
+  margin-top: 14px !important;
   margin-bottom: 0 !important;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 #kc-login,
 .pf-c-button.pf-m-primary,
-input[type="submit"].pf-c-button.pf-m-primary,
-button.pf-c-button.pf-m-primary {
+input[type="submit"].pf-c-button.pf-m-primary {
   width: 100% !important;
-  height: 44px !important;
-  padding: 10px 20px !important;
-  border-radius: 12px !important;
+  height: 40px !important;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
   border: none !important;
   background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 52%, #c026d3 100%) !important;
   color: #ffffff !important;
   font-family: inherit !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   font-weight: 600 !important;
-  letter-spacing: 0.01em !important;
   cursor: pointer !important;
-  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
-  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease !important;
+  box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.45) !important;
+  transition: transform 0.15s ease, filter 0.15s ease !important;
 }
 
 #kc-login:hover,
 .pf-c-button.pf-m-primary:hover {
   filter: brightness(1.1) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 14px 30px -5px rgba(99, 102, 241, 0.58), 0 0 0 1px rgba(255, 255, 255, 0.15) inset !important;
 }
 
-#kc-login:active,
-.pf-c-button.pf-m-primary:active {
-  transform: translateY(0) scale(0.99) !important;
-}
-
-#kc-login:disabled,
-.pf-c-button.pf-m-primary:disabled {
-  opacity: 0.6 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-}
-
-.pf-c-button.btn-default,
-button.btn-default {
-  width: 100% !important;
-  height: 42px !important;
-  padding: 10px 18px !important;
-  border-radius: 12px !important;
-  background: rgba(30, 41, 59, 0.85) !important;
-  border: 1px solid rgba(71, 85, 105, 0.7) !important;
-  color: #e2e8f0 !important;
-  font-size: 13.5px !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: background-color 0.15s ease, border-color 0.15s ease !important;
-}
-
-.pf-c-button.btn-default:hover {
-  background: rgba(51, 65, 85, 0.9) !important;
-  border-color: #64748b !important;
-}
-
-/* 10. Card Bottom Info / Registration Strip (#kc-info) */
+/* Card Bottom Registration Strip */
 #kc-info.login-pf-signup {
-  margin: 24px -32px -32px !important;
+  margin: 16px -24px -22px !important;
 }
 
 #kc-info-wrapper {
-  padding: 16px 32px !important;
+  padding: 12px 24px !important;
   background-color: rgba(2, 6, 23, 0.55) !important;
-  border-top: 1px solid rgba(51, 65, 85, 0.65) !important;
+  border-top: 1px solid rgba(51, 65, 85, 0.6) !important;
   color: var(--nexa-text-muted) !important;
-  font-size: 13px !important;
-  text-align: center !important;
-  line-height: 1.5 !important;
-}
-
-#kc-registration span {
-  color: var(--nexa-text-muted) !important;
-}
-
-/* 11. Alerts & Field Errors */
-.pf-c-form__helper-text.pf-m-error,
-#input-error,
-.kc-feedback-text {
-  color: #fb7185 !important;
   font-size: 12px !important;
-  font-weight: 500 !important;
-  margin-top: 6px !important;
-  display: block;
+  text-align: center !important;
 }
 
-.pf-c-alert {
-  border-radius: 12px !important;
-  padding: 12px 14px !important;
-  margin-bottom: 18px !important;
-  border: 1px solid rgba(148, 163, 184, 0.25) !important;
-  background: rgba(15, 23, 42, 0.9) !important;
-  box-shadow: none !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 10px !important;
+/* Tombol Navigasi Di Bawah Form */
+.nexamos-nav-under-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
 }
 
-.pf-c-alert::before {
-  display: none !important;
-}
-
-.pf-c-alert__icon {
-  margin-right: 0 !important;
-  background: transparent !important;
+.nexamos-btn-nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1px;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  color: var(--nexa-text-secondary);
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.pf-c-alert__title {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  line-height: 1.45 !important;
+.nexamos-btn-nav:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(99, 102, 241, 0.6);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
+.nexamos-btn-nav-primary {
+  border-color: rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+}
+
+.nexamos-btn-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+/* Alerts */
+.pf-c-alert {
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  margin-bottom: 12px !important;
+  font-size: 12px !important;
+}
 .alert-error,
 .pf-c-alert.pf-m-danger {
   background: rgba(244, 63, 94, 0.12) !important;
-  border-color: rgba(244, 63, 94, 0.32) !important;
+  border: 1px solid rgba(244, 63, 94, 0.32) !important;
   color: #fda4af !important;
 }
-.alert-error .pf-c-alert__title,
-.alert-error .pf-c-alert__icon {
-  color: #fda4af !important;
-}
-
 .alert-success,
 .pf-c-alert.pf-m-success {
   background: rgba(16, 185, 129, 0.12) !important;
-  border-color: rgba(16, 185, 129, 0.32) !important;
+  border: 1px solid rgba(16, 185, 129, 0.32) !important;
   color: #6ee7b7 !important;
 }
-.alert-success .pf-c-alert__title,
-.alert-success .pf-c-alert__icon {
-  color: #6ee7b7 !important;
-}
-
-.alert-warning,
-.pf-c-alert.pf-m-warning {
-  background: rgba(245, 158, 11, 0.12) !important;
-  border-color: rgba(245, 158, 11, 0.32) !important;
-  color: #fcd34d !important;
-}
-.alert-warning .pf-c-alert__title,
-.alert-warning .pf-c-alert__icon {
-  color: #fcd34d !important;
-}
-
 .alert-info,
 .pf-c-alert.pf-m-info {
   background: rgba(99, 102, 241, 0.12) !important;
-  border-color: rgba(99, 102, 241, 0.32) !important;
-  color: #a5b4fc !important;
-}
-.alert-info .pf-c-alert__title,
-.alert-info .pf-c-alert__icon {
+  border: 1px solid rgba(99, 102, 241, 0.32) !important;
   color: #a5b4fc !important;
 }
 
-/* 12. Attempted Username Pill (#kc-username) & Subtitle */
-#kc-username {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  background: rgba(30, 41, 59, 0.75) !important;
-  border: 1px solid rgba(71, 85, 105, 0.6) !important;
-  border-radius: 9999px !important;
-  padding: 5px 14px !important;
-  margin: 0 auto 8px !important;
-}
-
-#kc-attempted-username {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  color: var(--nexa-text-main) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.subtitle {
-  margin-top: 0 !important;
-  margin-bottom: 8px !important;
-  color: var(--nexa-text-muted) !important;
-  font-size: 12px !important;
-}
-
-p.instruction {
-  color: var(--nexa-text-secondary) !important;
-  font-size: 13.5px !important;
-  line-height: 1.55 !important;
-  margin-bottom: 16px !important;
-}
-
-/* 13. Page Footer Below Card */
-.nexamos-login-footer {
-  margin-top: 22px;
+/* ==========================================================================
+   ROW 2: 1 Kolom Center Page (Footer Copyright)
+   ========================================================================== */
+.nexamos-row-footer {
+  width: 100%;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  padding-top: 4px;
 }
 
-.nexamos-footer-links {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12.5px;
-}
-
-.nexamos-footer-link {
-  color: var(--nexa-text-muted) !important;
-  text-decoration: none !important;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
-
-.nexamos-footer-link:hover {
-  color: var(--nexa-accent-hover) !important;
-}
-
-.nexamos-footer-dot {
-  color: #475569;
-}
-
-.nexamos-footer-copy {
+.nexamos-footer-text {
+  margin: 0;
   color: #64748b;
-  font-size: 12px;
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
-/* 14. Responsive Adjustments */
-@media (max-width: 767px) {
-  .card-pf.nexamos-card {
-    padding: 24px 20px 26px !important;
-    border: 1px solid var(--nexa-card-border) !important;
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.75) !important;
+/* ==========================================================================
+   Responsive Breakpoints (Mobile & Low Height)
+   ========================================================================== */
+@media (max-width: 860px) {
+  html,
+  html.login-pf,
+  .login-pf body,
+  body.nexamos-body {
+    height: auto !important;
+    overflow-y: auto !important;
   }
 
-  #kc-info.login-pf-signup {
-    margin: 20px -20px -26px !important;
+  .nexamos-page-viewport {
+    height: auto !important;
+    min-height: 100vh !important;
+    padding: 32px 16px !important;
   }
 
-  #kc-info-wrapper {
-    padding: 14px 20px !important;
+  .nexamos-row-main {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 
-  .nexamos-brand-logo {
-    height: 48px;
+  .nexamos-col-brand {
+    padding-right: 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .nexamos-brand-wrapper {
+    align-items: center;
+  }
+
+  .nexamos-hero-desc {
+    max-width: 100%;
+  }
+
+  .nexamos-feature-grid {
+    display: none; /* Sembunyikan feature cards di layar kecil agar form langsung terlihat */
+  }
+
+  .nexamos-card-title {
+    text-align: center;
+  }
+}
+
+@media (max-height: 660px) {
+  html,
+  html.login-pf,
+  .login-pf body,
+  body.nexamos-body {
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+
+  .nexamos-page-viewport {
+    height: auto !important;
+    min-height: 100vh !important;
   }
 }
