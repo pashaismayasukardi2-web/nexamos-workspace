@@ -480,15 +480,39 @@ export default function WorkspacePage() {
                 </div>
               </div>
 
-              <a
-                href="https://crm.nexamos.cloud"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/20 transition active:scale-95"
-              >
-                <span>Buka NexaMOS CRM</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
+              {isCrmActive ? (
+                <a
+                  href={`https://crm.nexamos.cloud/login?sso=1${activeOrg?.slug ? `&tenant=${activeOrg.slug}` : ''}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/20 transition active:scale-95"
+                >
+                  <span>Buka NexaMOS CRM (SSO)</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://demo.nexamos.cloud/login"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-lg shadow-amber-500/20 transition active:scale-95"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                    <span>Coba Live Demo</span>
+                  </a>
+                  <a
+                    href="https://crm.nexamos.cloud/login?sso=1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition shrink-0 flex items-center gap-1"
+                    title="Buka atau Ajukan Ruang Kerja CRM Privat"
+                  >
+                    <span>CRM Privat</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* 3. NexaMOS Admin / Super Admin */}
