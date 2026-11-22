@@ -329,11 +329,57 @@ body.nexamos-body {
 .pf-c-form__label,
 .pf-c-form__label-text,
 .card-pf label {
-  display: block;
+  display: inline-block !important;
   color: var(--nexa-text-secondary) !important;
-  font-size: 12.5px !important;
+  font-size: 12px !important;
   font-weight: 600 !important;
-  margin-bottom: 5px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Form Registrasi (#kc-register-form): Layout 2 Kolom Kompak agar 100% Fit di Viewport PC */
+#kc-register-form {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  column-gap: 10px !important;
+  row-gap: 6px !important;
+  width: 100% !important;
+}
+
+#kc-register-form > .form-group {
+  margin: 0 !important;
+  grid-column: span 1 !important;
+}
+
+#kc-register-form > .form-group:last-of-type {
+  grid-column: 1 / -1 !important;
+  margin-top: 2px !important;
+}
+
+#kc-register-form #kc-form-options {
+  margin-bottom: 6px !important;
+  text-align: center !important;
+}
+
+#kc-register-form .pf-c-form-control,
+#kc-register-form input[type="text"],
+#kc-register-form input[type="password"],
+#kc-register-form input[type="email"] {
+  height: 32px !important;
+  padding: 4px 9px !important;
+  font-size: 12px !important;
+}
+
+.card-pf.nexamos-auth-card:has(#kc-register-form) {
+  max-width: 440px !important;
+  padding: 14px 18px 14px !important;
+}
+
+.nexamos-col-form:has(#kc-register-form) {
+  max-width: 440px !important;
+}
+
+.nexamos-col-form:has(#kc-register-form) .nexamos-col-footer {
+  margin-top: 12px !important;
 }
 
 .pf-c-form-control,

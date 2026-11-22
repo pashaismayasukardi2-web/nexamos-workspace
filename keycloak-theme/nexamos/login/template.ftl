@@ -359,11 +359,66 @@
 
       /* Form Fields */
       .pf-c-form__label, .pf-c-form__label-text, .card-pf label {
-        display: block !important;
+        display: inline-block !important;
         color: #cbd5e1 !important;
         font-size: 11.5px !important;
         font-weight: 600 !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 3px !important;
+      }
+
+      /* Form Registrasi (#kc-register-form): Layout 2 Kolom Kompak agar 100% Fit di Viewport PC tanpa kepotong */
+      #kc-register-form {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        column-gap: 10px !important;
+        row-gap: 6px !important;
+        width: 100% !important;
+      }
+
+      #kc-register-form > .form-group {
+        margin: 0 !important;
+        grid-column: span 1 !important;
+      }
+
+      /* Baris Tombol Submit & Back to Login di Form Register span 2 kolom penuh */
+      #kc-register-form > .form-group:last-of-type {
+        grid-column: 1 / -1 !important;
+        margin-top: 2px !important;
+      }
+
+      #kc-register-form #kc-form-options {
+        margin-bottom: 6px !important;
+        text-align: center !important;
+      }
+
+      #kc-register-form .pf-c-form-control,
+      #kc-register-form input[type="text"],
+      #kc-register-form input[type="password"],
+      #kc-register-form input[type="email"] {
+        height: 32px !important;
+        padding: 4px 9px !important;
+        font-size: 12px !important;
+      }
+
+      .card-pf.nexamos-auth-card:has(#kc-register-form) {
+        max-width: 440px !important;
+        padding: 14px 18px 14px !important;
+      }
+
+      .nexamos-col-form:has(#kc-register-form) {
+        max-width: 440px !important;
+      }
+
+      .nexamos-col-form:has(#kc-register-form) .nexamos-col-footer {
+        margin-top: 12px !important;
+      }
+
+      .card-pf.nexamos-auth-card:has(#kc-register-form) . subtitle,
+      .card-pf.nexamos-auth-card:has(#kc-register-form) .subtitle {
+        font-size: 10.5px !important;
+        color: #94a3b8 !important;
+        float: right !important;
+        margin-top: 2px !important;
       }
 
       .pf-c-form-control, input.pf-c-form-control,
@@ -625,7 +680,7 @@
         }
       }
 
-      @media (max-height: 520px) {
+      @media (max-height: 620px) {
         html, html.login-pf, .login-pf body, body.nexamos-body {
           height: auto !important;
           overflow-y: auto !important;
@@ -633,6 +688,7 @@
         .nexamos-page-viewport {
           height: auto !important;
           min-height: 100vh !important;
+          padding: 20px 24px !important;
         }
       }
     </style>
