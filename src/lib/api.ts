@@ -52,6 +52,19 @@ export async function revokeAllSessions(): Promise<{ success: boolean; message: 
   return { success: true, message: data.message || 'Semua sesi berhasil dicabut' };
 }
 
+export async function verifyMyEmail(): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${IDENTITY_API_URL}/users/me/verify-email`, {
+    method: 'POST',
+    headers: getHeaders(),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.message || 'Gagal memverifikasi alamat email');
+  }
+  return { success: true, message: data.message || 'Alamat email berhasil diverifikasi' };
+}
+
 export async function getOrganizationMembers(orgId: string): Promise<OrgMember[]> {
   const res = await fetch(`${IDENTITY_API_URL}/organizations/${orgId}/members`, {
     headers: getHeaders(),

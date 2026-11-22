@@ -775,6 +775,9 @@ export default function WorkspacePage() {
         onProfileUpdated={(newName) => {
           updateUser({ display_name: newName });
         }}
+        onEmailVerified={() => {
+          updateUser({ email_verified: true });
+        }}
         onLogoutAll={() => {
           logout();
         }}

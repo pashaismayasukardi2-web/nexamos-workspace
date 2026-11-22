@@ -73,14 +73,26 @@ export async function POST(req: NextRequest) {
       const meJson = await meRes.json();
       userMe = meJson.data;
     } else if (meRes.status === 403) {
-      // Auto-provisioning jika user baru
+      const errBody = await meRes.json().catch(() => ({}));
+      if (errBody.code === 'USER_SUSPENDED' || errBody.code === 'USER_DELETED') {
+        return NextResponse.json(
+          { error: errBody.message || 'Akun Anda telah ditangguhkan oleh Administrator.', code: errBody.code },
+          { status: 403 }
+        );
+      }
+
+      // Auto-provisioning jika user baru (kirim Bearer access_token untuk melewati requireInternalOrOIDC)
       const provRes = await fetch(`${IDENTITY_API_URL}/users/provision`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${access_token}`,
+        },
         body: JSON.stringify({
           identity_subject: idPayload.sub || '',
           display_name: idPayload.name || idPayload.preferred_username || 'Pengguna NexaMOS',
           email: idPayload.email || `${idPayload.preferred_username || 'user'}@nexamos.local`,
+          email_verified: Boolean(idPayload.email_verified),
         }),
       });
 
@@ -148,7 +160,28 @@ export async function POST(req: NextRequest) {
       expiresAt: Date.now() + (expires_in || 900) * 1000,
     };
 
-    return NextResponse.json({ success: true, session });
+    const response = NextResponse.json({ success: true, session });
+
+    // Phase 6 Security: Simpan refresh_token HANYA di HttpOnly, Secure, SameSite=Strict cookie
+    // dan JANGAN pernah kirim atau simpan refresh_token di localStorage client!
+    if (tokenData.refresh_token) {
+      response.cookies.set('nexamos_ws_rt', tokenData.refresh_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: tokenData.refresh_expires_in || 30 * 24 * 60 * 60,
+      });
+    }
+    response.cookies.set('nexamos_ws_sid', String(idPayload.sub || session.user.id), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: expires_in || 900,
+    });
+
+    return response;
   } catch (err: any) {
     console.error('Server Token Route Error:', err);
     return NextResponse.json(

@@ -131,7 +131,7 @@ function base64UrlEncode(buffer: ArrayBuffer): string {
 // ── Auth Service Public API ───────────────────────────────────────
 
 export interface LoginOptions {
-  action?: 'login' | 'register';
+  action?: 'login' | 'register' | 'totp';
   productIntent?: string | null;
   returnTo?: string | null;
 }
@@ -179,6 +179,11 @@ export async function login(options?: LoginOptions): Promise<void> {
   authUrl.searchParams.set('code_challenge', challenge);
   authUrl.searchParams.set('code_challenge_method', 'S256');
   authUrl.searchParams.set('state', state);
+
+  // Phase 6 MFA (TOTP): Trigger Keycloak Application Initiated Action CONFIGURE_TOTP
+  if (options?.action === 'totp') {
+    authUrl.searchParams.set('kc_action', 'CONFIGURE_TOTP');
+  }
 
   window.location.href = authUrl.toString();
 }

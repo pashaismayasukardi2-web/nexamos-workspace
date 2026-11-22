@@ -16,13 +16,15 @@ import {
   Loader2
 } from 'lucide-react';
 import { IAMUser, AuditEvent } from '../types/auth';
-import { updateProfile, getMyAuditEvents, revokeAllSessions } from '../lib/api';
+import { updateProfile, getMyAuditEvents, revokeAllSessions, verifyMyEmail } from '../lib/api';
+import { login as triggerAuthFlow } from '../lib/auth';
 
 interface AccountSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: IAMUser | null;
   onProfileUpdated?: (newName: string) => void;
+  onEmailVerified?: () => void;
   onLogoutAll?: () => void;
 }
 
@@ -31,11 +33,13 @@ export function AccountSettingsModal({
   onClose,
   user,
   onProfileUpdated,
+  onEmailVerified,
   onLogoutAll,
 }: AccountSettingsModalProps) {
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'history'>('profile');
   const [displayName, setDisplayName] = useState(user?.display_name || '');
   const [isSaving, setIsSaving] = useState(false);
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -218,13 +222,36 @@ export function AccountSettingsModal({
                       Terverifikasi
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
-                      Belum Verifikasi
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
+                        Belum Verifikasi
+                      </span>
+                      <button
+                        type="button"
+                        disabled={isVerifyingEmail}
+                        onClick={async () => {
+                          setIsVerifyingEmail(true);
+                          setErrorMessage(null);
+                          try {
+                            await verifyMyEmail();
+                            setSaveSuccess('Alamat email berhasil diverifikasi!');
+                            if (onEmailVerified) onEmailVerified();
+                            setTimeout(() => setSaveSuccess(null), 3000);
+                          } catch (err: any) {
+                            setErrorMessage(err.message || 'Gagal memverifikasi email.');
+                          } finally {
+                            setIsVerifyingEmail(false);
+                          }
+                        }}
+                        className="text-xs px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition disabled:opacity-50"
+                      >
+                        {isVerifyingEmail ? 'Memverifikasi...' : 'Verifikasi Sekarang'}
+                      </button>
+                    </div>
                   )}
                 </div>
                 <p className="text-xs text-slate-500 mt-1.5">
-                  Email dikelola terpusat oleh Keycloak Identity Provider untuk keamanan login.
+                  Email dikelola terpusat oleh Keycloak Identity Provider. Email terverifikasi diperlukan untuk membuat organisasi B2B atau mengundang anggota tim (AT-013).
                 </p>
               </div>
 
@@ -266,6 +293,31 @@ export function AccountSettingsModal({
                     <span className="text-slate-400 block mb-1">Penyedia Identitas:</span>
                     <span className="font-semibold text-white">Keycloak 24 (Quarkus)</span>
                   </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white font-semibold text-xs sm:text-sm">
+                    <KeyRound className="w-4 h-4 text-indigo-400" />
+                    <span>Autentikasi Dua Faktor (MFA / TOTP)</span>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                    Google Authenticator / Authy
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Tingkatkan keamanan akun Nexa ID Anda dengan mengaktifkan kode OTP 6-digit berbasis aplikasi autentikator (TOTP).
+                </p>
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => triggerAuthFlow({ action: 'totp' })}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-300 border border-indigo-500/30 text-xs font-semibold transition"
+                  >
+                    <KeyRound className="w-3.5 h-3.5" />
+                    <span>Konfigurasi Authenticator (TOTP MFA)</span>
+                  </button>
                 </div>
               </div>
 
