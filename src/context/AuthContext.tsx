@@ -2,14 +2,14 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthSession, IAMUser } from '../types/auth';
-import { getSession, login as authLogin, logout as authLogout, updateUserSession } from '../lib/auth';
+import { getSession, login as authLogin, logout as authLogout, updateUserSession, LoginOptions } from '../lib/auth';
 
 interface AuthContextType {
   session: AuthSession | null;
   user: IAMUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: () => Promise<void>;
+  login: (options?: LoginOptions) => Promise<void>;
   logout: () => void;
   refreshSession: () => void;
   updateUser: (partial: Partial<IAMUser>) => void;

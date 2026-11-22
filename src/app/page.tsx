@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { resolveIntentRedirectUrl, validateSafeReturnTo } from '../lib/auth';
 import { WebStudioPricingModal } from '../components/WebStudioPricingModal';
 import { AccountSettingsModal } from '../components/AccountSettingsModal';
 import { OrganizationManagementModal } from '../components/OrganizationManagementModal';
@@ -59,6 +60,39 @@ export default function WorkspacePage() {
       setSelectedOrgId(user.organizations[0].id);
     }
   }, [user, selectedOrgId]);
+
+  // [PHASE 5 IAM] Handle action=login|register, product_intent, & safe return_to from Corporate Website (nexamos.cloud)
+  const [rejectedReturnUrl, setRejectedReturnUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window === 'undefined' || isLoading) return;
+    const params = new URLSearchParams(window.location.search);
+    const actionParam = params.get('action');
+    const productIntent = params.get('product_intent');
+    const rawReturnTo = params.get('return_to');
+
+    if (rawReturnTo && !validateSafeReturnTo(rawReturnTo)) {
+      setRejectedReturnUrl(rawReturnTo);
+      return;
+    }
+
+    if (actionParam === 'login' || actionParam === 'register' || productIntent || rawReturnTo) {
+      if (isAuthenticated) {
+        const target = resolveIntentRedirectUrl(productIntent, rawReturnTo);
+        if (target) {
+          window.location.href = target;
+          return;
+        }
+        // Bersihkan query params jika hanya action=login/register dan sudah login
+        window.history.replaceState({}, '', window.location.pathname);
+      } else {
+        login({
+          action: actionParam === 'register' ? 'register' : 'login',
+          productIntent,
+          returnTo: rawReturnTo,
+        });
+      }
+    }
+  }, [isLoading, isAuthenticated, login]);
 
   // Fetch entitlements whenever active organization changes
   useEffect(() => {
@@ -290,6 +324,26 @@ export default function WorkspacePage() {
 
       {/* ── Main Content Body ─────────────────────────────────────────── */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8 flex flex-col gap-8">
+        {/* AT-014 Security Banner if Invalid Redirect URL Rejected */}
+        {rejectedReturnUrl && (
+          <div className="rounded-2xl bg-rose-500/10 border border-rose-500/30 p-4 flex items-center justify-between text-xs text-rose-300">
+            <div>
+              <strong className="font-bold text-rose-400">Keamanan Redirect (AT-014):</strong> Parameter{' '}
+              <code>return_to</code> ditolak karena berada di luar domain resmi ekosistem NexaMOS (
+              <code>{rejectedReturnUrl}</code>).
+            </div>
+            <button
+              onClick={() => {
+                setRejectedReturnUrl(null);
+                window.history.replaceState({}, '', window.location.pathname);
+              }}
+              className="px-3 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 font-semibold shrink-0 ml-4"
+            >
+              Tutup
+            </button>
+          </div>
+        )}
+
         {/* Welcome Hero Banner */}
         <div className="relative rounded-3xl bg-linear-to-b from-slate-900/90 via-slate-900/60 to-slate-950 border border-slate-800/80 p-6 sm:p-8 overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />

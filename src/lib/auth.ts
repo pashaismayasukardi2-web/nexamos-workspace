@@ -8,6 +8,93 @@ const IDENTITY_API_URL = process.env.NEXT_PUBLIC_IDENTITY_API_URL || 'https://ne
 const STORAGE_SESSION_KEY = 'nexamos_workspace_session';
 const STORAGE_VERIFIER_KEY = 'nexamos_workspace_verifier';
 const STORAGE_STATE_KEY = 'nexamos_workspace_state';
+const STORAGE_RETURN_TO_KEY = 'nexamos_workspace_return_to';
+const STORAGE_PRODUCT_INTENT_KEY = 'nexamos_workspace_product_intent';
+
+/**
+ * Phase 5 IAM — Strict Redirect Allowlist (AT-014 Compliance)
+ * Hanya izinkan redirect ke origin resmi NexaMOS:
+ * - nexamos.cloud/workspace*
+ * - workspace.nexamos.cloud/*
+ * - crm.nexamos.cloud/*
+ * - studio.nexamos.cloud/*
+ * - demo.nexamos.cloud/*
+ * - superadmin.nexamos.cloud/*
+ * Reject semua arbitrary external URL untuk mencegah open-redirect phishing.
+ */
+export function validateSafeReturnTo(rawUrl?: string | null): string | null {
+  if (!rawUrl || typeof rawUrl !== 'string') return null;
+  const trimmed = rawUrl.trim();
+  if (!trimmed) return null;
+
+  // Izinkan relative path di bawah /workspace
+  if (trimmed.startsWith('/workspace') && !trimmed.startsWith('//')) {
+    return trimmed;
+  }
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null;
+
+    const host = parsed.hostname.toLowerCase();
+    const allowedHosts = new Set([
+      'workspace.nexamos.cloud',
+      'crm.nexamos.cloud',
+      'studio.nexamos.cloud',
+      'demo.nexamos.cloud',
+      'superadmin.nexamos.cloud',
+    ]);
+
+    if (allowedHosts.has(host)) {
+      return parsed.toString();
+    }
+
+    if (host === 'nexamos.cloud' && parsed.pathname.startsWith('/workspace')) {
+      return parsed.toString();
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function resolveIntentRedirectUrl(
+  productIntent?: string | null,
+  returnTo?: string | null
+): string | null {
+  const safeReturn = validateSafeReturnTo(returnTo);
+  if (safeReturn) return safeReturn;
+
+  const intent = String(productIntent || '').trim().toUpperCase();
+  if (intent === 'NEXAMOS_WEB_STUDIO') {
+    return 'https://studio.nexamos.cloud';
+  }
+  if (intent === 'NEXAMOS_CRM') {
+    return 'https://crm.nexamos.cloud/login?sso=1';
+  }
+  if (intent === 'NEXAMOS_ADMIN') {
+    return 'https://superadmin.nexamos.cloud';
+  }
+  return null;
+}
+
+export function consumePostLoginRedirect(): string | null {
+  if (typeof window === 'undefined') return null;
+  const savedReturnTo =
+    sessionStorage.getItem(STORAGE_RETURN_TO_KEY) ||
+    localStorage.getItem(STORAGE_RETURN_TO_KEY);
+  const savedIntent =
+    sessionStorage.getItem(STORAGE_PRODUCT_INTENT_KEY) ||
+    localStorage.getItem(STORAGE_PRODUCT_INTENT_KEY);
+
+  sessionStorage.removeItem(STORAGE_RETURN_TO_KEY);
+  sessionStorage.removeItem(STORAGE_PRODUCT_INTENT_KEY);
+  localStorage.removeItem(STORAGE_RETURN_TO_KEY);
+  localStorage.removeItem(STORAGE_PRODUCT_INTENT_KEY);
+
+  return resolveIntentRedirectUrl(savedIntent, savedReturnTo);
+}
 
 export function getBasePath(): string {
   if (typeof window === 'undefined') return '';
@@ -43,7 +130,13 @@ function base64UrlEncode(buffer: ArrayBuffer): string {
 
 // ── Auth Service Public API ───────────────────────────────────────
 
-export async function login(): Promise<void> {
+export interface LoginOptions {
+  action?: 'login' | 'register';
+  productIntent?: string | null;
+  returnTo?: string | null;
+}
+
+export async function login(options?: LoginOptions): Promise<void> {
   if (typeof window === 'undefined') return;
 
   const verifier = generateRandomString(96);
@@ -56,9 +149,29 @@ export async function login(): Promise<void> {
   localStorage.setItem(STORAGE_VERIFIER_KEY, verifier);
   localStorage.setItem(STORAGE_STATE_KEY, state);
 
+  // Simpan return_to yang lolos allowlist & product_intent (Phase 5 IAM)
+  const safeReturnTo = validateSafeReturnTo(options?.returnTo);
+  if (safeReturnTo) {
+    sessionStorage.setItem(STORAGE_RETURN_TO_KEY, safeReturnTo);
+    localStorage.setItem(STORAGE_RETURN_TO_KEY, safeReturnTo);
+  } else {
+    sessionStorage.removeItem(STORAGE_RETURN_TO_KEY);
+    localStorage.removeItem(STORAGE_RETURN_TO_KEY);
+  }
+
+  if (options?.productIntent) {
+    const cleanIntent = String(options.productIntent).trim().toUpperCase();
+    sessionStorage.setItem(STORAGE_PRODUCT_INTENT_KEY, cleanIntent);
+    localStorage.setItem(STORAGE_PRODUCT_INTENT_KEY, cleanIntent);
+  } else {
+    sessionStorage.removeItem(STORAGE_PRODUCT_INTENT_KEY);
+    localStorage.removeItem(STORAGE_PRODUCT_INTENT_KEY);
+  }
+
   const redirectUri = `${window.location.origin}${getBasePath()}/auth/callback`;
 
-  const authUrl = new URL(`${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/auth`);
+  const endpoint = options?.action === 'register' ? 'registrations' : 'auth';
+  const authUrl = new URL(`${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/${endpoint}`);
   authUrl.searchParams.set('client_id', CLIENT_ID);
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('scope', 'openid profile email');

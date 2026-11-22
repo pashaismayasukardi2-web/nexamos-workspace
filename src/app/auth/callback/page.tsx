@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getBasePath, handleCallback, login } from '../../../lib/auth';
+import { getBasePath, handleCallback, login, consumePostLoginRedirect } from '../../../lib/auth';
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const RETRY_FLAG_KEY = 'nexamos_workspace_sso_retry';
@@ -47,8 +47,9 @@ function CallbackContent() {
         await handleCallback(code!, state!);
         sessionStorage.removeItem(RETRY_FLAG_KEY);
         setStatus('success');
+        const targetRedirect = consumePostLoginRedirect();
         setTimeout(() => {
-          window.location.href = getBasePath() || '/';
+          window.location.href = targetRedirect || getBasePath() || '/';
         }, 600);
       } catch (err: any) {
         console.warn('[Auth Callback] Retrying or handling error:', err);
